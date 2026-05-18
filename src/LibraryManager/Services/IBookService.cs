@@ -8,4 +8,6 @@ public interface IBookService
     public void RemoveBook(Book Book);
     public List<Book> SearchBooks(string text);
     public List<Book> SortBooks(string criteria);
+
+    public IReadOnlyList<Book> GetAllBooks();
 }

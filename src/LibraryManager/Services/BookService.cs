@@ -4,21 +4,21 @@ namespace LibraryManager.Services;
 
 public class BookService : IBookService
 {
-    private readonly List<Book> Books = [];
+    private readonly List<Book> _books = [];
 
     public void AddBook(Book book)
     {
-        Books.Add(book);
+        _books.Add(book);
     }
 
     public void RemoveBook(Book book)
     {
-        Books.Remove(book);
+        _books.Remove(book);
     }
 
     public List<Book> SearchBooks(string text)
     {
-        return Books
+        return _books
             .Where(book =>
                 book.Title.Contains(text, StringComparison.OrdinalIgnoreCase) ||
                 book.Author.Contains(text, StringComparison.OrdinalIgnoreCase) ||
@@ -31,11 +31,16 @@ public class BookService : IBookService
     {
         return criteria.ToLower() switch
         {
-            "title" => Books.OrderBy(book => book.Title).ToList(),
-            "author" => Books.OrderBy(book => book.Author).ToList(),
-            "year" => Books.OrderBy(book => book.PublishYear).ToList(),
-            "genre" => Books.OrderBy(book => book.Genre).ToList(),
+            "title" => _books.OrderBy(book => book.Title).ToList(),
+            "author" => _books.OrderBy(book => book.Author).ToList(),
+            "year" => _books.OrderBy(book => book.PublishYear).ToList(),
+            "genre" => _books.OrderBy(book => book.Genre).ToList(),
             _ => throw new ArgumentException("Invalid criteria.")
         };
+    }
+
+    public IReadOnlyList<Book> GetAllBooks()
+    {
+        return _books;
     }
 }
