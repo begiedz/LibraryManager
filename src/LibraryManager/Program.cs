@@ -24,6 +24,18 @@ while (true)
         case 2:
             AddBook();
             break;
+        case 3:
+            EditBook();
+            break;
+        case 4:
+            RemoveBook();
+            break;
+        case 5:
+            Console.WriteLine("Program shutdow.");
+            return 0;
+        default:
+            Console.WriteLine("Invalid choice.");
+            continue;
     }
 }
 
@@ -78,4 +90,74 @@ void AddBook()
     var genre = Console.ReadLine();
 
     bookService.AddBook(new Book(title, author, year, genre));
+}
+
+void EditBook()
+{
+    throw new NotImplementedException();
+}
+
+void RemoveBook()
+{
+    Book? bookToRemove = SelectBook();
+
+    if (bookToRemove is null)
+    {
+        Console.WriteLine("No book found.");
+        return;
+    }
+
+    Console.WriteLine("The selected book will be removed:");
+    Console.WriteLine(bookToRemove.GetInfo());
+
+    while (true)
+    {
+        Console.WriteLine("Write 'y' to delete, 'n' to abort.");
+        ConsoleKey choice = Console.ReadKey(true).Key;
+
+        switch (choice)
+        {
+            case ConsoleKey.Y:
+                bookService.RemoveBook(bookToRemove);
+                Console.WriteLine("Book removed.");
+                return;
+            case ConsoleKey.N:
+                Console.WriteLine("Action aborted.");
+                return;
+            default:
+                Console.WriteLine("Invalid key.");
+                break;
+        }
+    }
+}
+
+Book? SelectBook()
+{
+    Console.WriteLine("Enter the title of the book: ");
+    string? title = Console.ReadLine();
+    if (string.IsNullOrWhiteSpace(title))
+    {
+        Console.WriteLine("Title cannot be empty.");
+    }
+
+    List<Book> foundBooks = bookService.SearchBooks(title);
+    if (foundBooks.Count > 1)
+    {
+        for (int i = 0; i < foundBooks.Count; i++)
+        {
+            Console.WriteLine($"{i}. {foundBooks[i].GetInfo()}");
+        }
+
+        Console.WriteLine("Choose the index of the book: ");
+        var indexText = Console.ReadLine();
+
+        if (!int.TryParse(indexText, out int index)
+        || index >= foundBooks.Count
+        || index < 0)
+            throw new ArgumentException("Invalid index.");
+
+        return foundBooks[index];
+    }
+
+    return foundBooks.FirstOrDefault();
 }
