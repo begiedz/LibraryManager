@@ -1,4 +1,5 @@
-﻿using LibraryManager.Models;
+﻿using System.Runtime.InteropServices;
+using LibraryManager.Models;
 using LibraryManager.Services;
 
 var bookService = new BookService();
@@ -14,59 +15,77 @@ Console.WriteLine(".NET Library Manager");
 
 while (true)
 {
-    var choice = DisplayMenu();
-
-    switch (choice)
+    try
     {
-        case 1:
-            DisplayAllBooks();
-            break;
-        case 2:
-            AddBook();
-            break;
-        case 3:
-            EditBook();
-            break;
-        case 4:
-            RemoveBook();
-            break;
-        case 5:
-            Console.WriteLine("Program shutdow.");
-            return 0;
-        default:
-            Console.WriteLine("Invalid choice.");
-            continue;
+        char choice = MenuChoice();
+
+        switch (choice)
+        {
+            case '1':
+                DisplayAllBooks();
+                break;
+            case '2':
+                AddBook();
+                break;
+            case '3':
+                EditBook();
+                break;
+            case '4':
+                RemoveBook();
+                break;
+            case '5':
+                Console.WriteLine("Program shutdow.");
+                return 0;
+            default:
+                Console.WriteLine("Invalid choice.");
+                continue;
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
     }
 }
 
-int? DisplayMenu()
+char MenuChoice()
 {
+    List<string> menuOptions =
+    [
+        "1. Show all books",
+        "2. Add new book",
+        "3. Edit book",
+        "4. Delete book",
+        "5. Exit program"
+    ];
+
     Console.WriteLine();
-    Console.WriteLine("Menu:");
-    Console.WriteLine("1. Show all books");
-    Console.WriteLine("2. Add new book");
-    Console.WriteLine("3. Edit book");
-    Console.WriteLine("4. Delete book");
-    Console.WriteLine("5. Exit program");
+    Console.WriteLine(string.Join(" | ", menuOptions));
     Console.Write("Choose action: ");
 
-    string? input = Console.ReadLine();
+    char input = Console.ReadKey().KeyChar;
 
-    if (!int.TryParse(input, out int choice) || choice < 1 || choice > 5)
+    if (input < '1' || input > '5')
     {
-        Console.WriteLine("Invalid number.");
-        return null;
+        Console.WriteLine("Invalid key.");
+        return '\0';
     }
-
-    return choice;
+    Console.WriteLine("\n");
+    return input;
 }
 
 void DisplayAllBooks()
 {
     var books = bookService.GetAllBooks();
 
-    foreach (var book in books)
-        Console.WriteLine(book.GetInfo());
+    if (books.Count == 0)
+    {
+        Console.WriteLine("Library is empty");
+    }
+    else
+    {
+        foreach (var book in books)
+            Console.WriteLine(book.GetInfo());
+    }
 }
 
 void AddBook()
