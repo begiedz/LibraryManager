@@ -113,7 +113,42 @@ void AddBook()
 
 void EditBook()
 {
-    throw new NotImplementedException();
+    Book? bookToEdit = SelectBook();
+
+    if (bookToEdit is null)
+    {
+        Console.WriteLine("No book found.");
+        return;
+    }
+
+    Console.WriteLine("Press Enter to skip each field");
+    Console.WriteLine("New title: ");
+
+    string? newTitle = Console.ReadLine();
+    if (!string.IsNullOrEmpty(newTitle))
+        bookToEdit.Title = newTitle;
+
+    Console.WriteLine("New author: ");
+
+    string? newAuthor = Console.ReadLine();
+    if (!string.IsNullOrEmpty(newAuthor))
+        bookToEdit.Author = newAuthor;
+
+    Console.WriteLine("New publication year: ");
+    string? newPubYearString = Console.ReadLine();
+    if (!string.IsNullOrEmpty(newPubYearString))
+    {
+        if (int.TryParse(newPubYearString, out int newPubYear))
+            bookToEdit.PublishYear = newPubYear;
+        else
+            Console.WriteLine("Invalid year. Year was not changed.");
+    }
+
+    Console.WriteLine("New genre: ");
+    string? newGenre = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(newGenre))
+        bookToEdit.Genre = newGenre;
 }
 
 void RemoveBook()
